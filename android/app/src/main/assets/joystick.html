@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Joystick</title>
+  <style>
+    .zone {
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 200px;
+        left: 0;
+    }
+    .zone > h1 {
+        position: absolute;
+        padding: 10px 10px;
+        margin: 0;
+        color: white;
+        right: 0;
+        bottom: 0;
+    }
+    .zone.static {
+        background: rgba(255, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <p>Soy el joystick!</p>
+  <div id="dynamic" class="zone static"><h1>static</h1></div>
+
+
+  <script src="file:///android_asset/nipplejs.js"></script>
+
+  <script>
+    function printStuff(stuff){
+      var el = document.createElement("pre");
+      var str = JSON.stringify(stuff);
+      el.innerHTML = str;
+      document.body.appendChild(el);
+    }
+
+    function sendMessage(txt) {
+      // printStuff("Sending: " + txt); /* uncomment to DEBUG :) */
+      try {
+        window.postMessage(txt, '*'); /* Remove the star and it will stop to work on Android */
+      } catch(err) {
+        printStuff("ERROR!");
+        printStuff(err.toString());
+      }
+    }
+  </script>
+
+  <script>
+    var manager = nipplejs.create({
+      zone: document.getElementById('dynamic'),
+      color: 'blue'
+    });
+
+    manager.on('move', function (evt, data) {
+      sendMessage(JSON.stringify({ type: 'move', data: data}));
+    });
+  </script>
+</body>
+</html>
